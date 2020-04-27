@@ -36,6 +36,7 @@ This project provides a brief overview and model for the approach taken to solve
 4. Create an API integrated with Application.py or build a Core ML model to integrated with an Mobile app easily. 
 5. Reduce the dependency between Application.py and Summarizer.py. 
 6. Added functionality to build multi-decoder architecutre to support counselling in other languages as well. 
+7. We would also use pickle file format to save the maps as opposed to numpy file format.
 
 ## Bibliography and Reference: 
 1. Effective Approaches to Attention-based Neural Machine Translation (Luong et. al, 2015)
