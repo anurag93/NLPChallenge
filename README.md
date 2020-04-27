@@ -38,6 +38,11 @@ This project provides a brief overview and model for the approach taken to solve
 6. Added functionality to build multi-decoder architecutre to support counselling in other languages as well. 
 7. We would also use pickle file format to save the maps as opposed to numpy file format.
 
+Below where some of the challenges:
+1. Insufficient information in the dataset and a more comprehensive dataset needed. As mentioned earlier a more denser dataset would provide better performance from our model.
+2. GPU support: We have currently used Google Colab GPU support and the model could be trained faster if we had a local GPU support. 
+3. Youper reply although answers the questions but more often than not is way out of the way. A dataset with more shorter and precise answers can provide meaningful results. 
+
 ## Bibliography and Reference: 
 1. Effective Approaches to Attention-based Neural Machine Translation (Luong et. al, 2015)
 2. https://blog.floydhub.com/attention-mechanism/
