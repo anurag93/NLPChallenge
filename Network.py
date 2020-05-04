@@ -8,7 +8,7 @@ We have used EncoderLSTM which defines the Encoder architecture.
 LuongDecoder model which defines the decoder architecture.
 Attention model which defines the Attention mechanism.
 '''
-
+device = "cuda"
 class EncoderLSTM(nn.Module):
     def __init__(self, inputSize, hiddenSize, nLayers = 1, dropProb = 0):
         super(EncoderLSTM, self).__init__()
@@ -17,7 +17,6 @@ class EncoderLSTM(nn.Module):
         self.embedding = nn.Embedding(inputSize, hiddenSize)
         self.lstm = nn.LSTM(hiddenSize, hiddenSize, nLayers,
                             dropout=dropProb, batch_first=True)
-        self.device = "cuda"
 
     def forward(self, inputs, hidden):
         embedded = self.embedding(inputs)

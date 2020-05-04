@@ -4,6 +4,7 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 import random
+import Network as network
 '''
 Loading the data and preprocessing it.
 Training Network.
@@ -18,9 +19,9 @@ process.cleanText()
 process.preprocess(0.1)
 
 hiddenSize = 256
-encoder = EncoderLSTM(len(process.en_tr_words), hiddenSize).to(torch.device(EncoderLSTM.device))
+encoder = EncoderLSTM(len(process.en_tr_words), hiddenSize).to(torch.device(network.device))
 attn = Attention(hiddenSize, "concat")
-decoder = LuongDecoder(hiddenSize, len(process.de_tr_words), attn).to(torch.device(EncoderLSTM.device))
+decoder = LuongDecoder(hiddenSize, len(process.de_tr_words), attn).to(torch.device(network.device))
 
 lr = 0.001
 encoderOptimizer = optim.Adam(encoder.parameters(), lr=lr)
@@ -38,10 +39,10 @@ for epoch in range(EPOCHS):
         h = encoder.init_hidden()
         encoderOptimizer.zero_grad()
         decoderOptimizer.zero_grad()
-        inp = torch.tensor(sentence).unsqueeze(0).to(torch.device(EncoderLSTM.device))
+        inp = torch.tensor(sentence).unsqueeze(0).to(torch.device(network.device))
         encoderOutputs, h = encoder(inp, h)
 
-        decoderInput = torch.tensor([process.en_tr_w2i['_SOS']], device=torch.device(EncoderLSTM.device))
+        decoderInput = torch.tensor([process.en_tr_w2i['_SOS']], device=torch.device(network.device))
         decoderHidden = h
         output = []
         teacher_forcing = True if random.random()<teacher_probe else False
@@ -50,14 +51,14 @@ for epoch in range(EPOCHS):
             decoderOutput, decoderHidden, attnWeights = decoder(decoderInput, decoderHidden, encoderOutputs)
             topVal, topIdx = decoderOutput.topk(1)
             if teacher_forcing:
-                decoderInput = torch.tensor([process.de_tr_inputs[i][ii]], device=torch.device(EncoderLSTM.device))
+                decoderInput = torch.tensor([process.de_tr_inputs[i][ii]], device=torch.device(network.device))
             else:
-                decoderInput = torch.tensor([topIdx.item()], device=torch.device(EncoderLSTM.device))
+                decoderInput = torch.tensor([topIdx.item()], device=torch.device(network.device))
             output.append(topIdx.item())
 
             loss += F.nll_loss(decoderOutput.view(1,-1),
                                torch.tensor([process.de_tr_inputs[i][ii]],
-                                            device=torch.device(EncoderLSTM.device)))
+                                            device=torch.device(network.device)))
         loss.backward()
         encoderOptimizer.step()
         decoderOptimizer.step()
