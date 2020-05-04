@@ -12,26 +12,28 @@ Saving the Network.
 '''
 
 filePath = "20200325_counsel_chat.csv"
-columns = ['questionText', 'answerText']
+columns = ['questionText', 'questionTitle']
 process = Preprocess(filePath, columns)
 process.readData()
 process.cleanText()
 process.preprocess(0.1)
+process.preprocessMaps()
 
 hiddenSize = 256
-encoder = EncoderLSTM(len(process.en_tr_words), hiddenSize).to(torch.device(network.device))
+encoder = EncoderLSTM(len(process.en_words), hiddenSize).to(torch.device(network.device))
 attn = Attention(hiddenSize, "concat")
-decoder = LuongDecoder(hiddenSize, len(process.de_tr_words), attn).to(torch.device(network.device))
+decoder = LuongDecoder(hiddenSize, len(process.de_words), attn).to(torch.device(network.device))
+
+EPOCHS = 40
+teacher_probe = 0.5
+encoder.train()
+decoder.train()
+
 
 lr = 0.001
 encoderOptimizer = optim.Adam(encoder.parameters(), lr=lr)
 decoderOptimizer = optim.Adam(decoder.parameters(), lr=lr)
 
-
-EPOCHS = 10
-teacher_probe = 0.5
-encoder.train()
-decoder.train()
 for epoch in range(EPOCHS):
     avg_loss = 0
     for i, sentence in enumerate(process.en_tr_inputs):
@@ -42,7 +44,7 @@ for epoch in range(EPOCHS):
         inp = torch.tensor(sentence).unsqueeze(0).to(torch.device(network.device))
         encoderOutputs, h = encoder(inp, h)
 
-        decoderInput = torch.tensor([process.en_tr_w2i['_SOS']], device=torch.device(network.device))
+        decoderInput = torch.tensor([process.en_w2i['_SOS']], device=torch.device(network.device))
         decoderHidden = h
         output = []
         teacher_forcing = True if random.random()<teacher_probe else False
