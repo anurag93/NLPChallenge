@@ -24,8 +24,8 @@ class EncoderLSTM(nn.Module):
         return output, hidden
 
     def init_hidden(self, batchSize = 1):
-        return (torch.zeros(self.nLayers, batchSize, self.hiddenSize, device=torch.device(self.device)),
-                torch.zeros(self.nLayers, batchSize, self.hiddenSize, device=torch.device(self.device)))
+        return (torch.zeros(self.nLayers, batchSize, self.hiddenSize, device=torch.device(device)),
+                torch.zeros(self.nLayers, batchSize, self.hiddenSize, device=torch.device(device)))
 
 
 class LuongDecoder(nn.Module):
